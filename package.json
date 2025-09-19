@@ -2,13 +2,15 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "bun app.ts",
-    "dev": "bun --hot app.ts"
+    "start": "bun src/app.ts",
+    "dev": "bun --hot src/app.ts"
   },
   "devDependencies": {
     "@types/bun": "latest"
   },
   "dependencies": {
-    "elysia": "^1.4.6"
+    "@types/pg": "^8.15.5",
+    "elysia": "^1.4.6",
+    "pg": "^8.16.3"
   }
 }
