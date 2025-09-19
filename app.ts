@@ -1,11 +1,11 @@
+import { Elysia } from "elysia";
 const PORT: number = +(process.env.PORT || 8081);
 const NODE_ENV = process.env.NODE_ENV ?? "development";
 
-const server = Bun.serve({
-  port: PORT,
-  fetch() {
-    return new Response("Welcome to Bun!");
-  },
-});
+const app = new Elysia();
 
-console.log(`[${NODE_ENV}] Serving http://localhost:${server.port}`);
+app.get("/", () => "Rodando API com Elysia e Bun!");
+
+app.listen(PORT, () => {
+  console.log(`[${NODE_ENV}] Server rodando na porta ${PORT}`);
+});
