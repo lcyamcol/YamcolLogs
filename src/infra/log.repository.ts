@@ -54,4 +54,90 @@ export class LogRepositoryPg implements ILogRepository {
             client?.release();
         }
     }
+
+    async getAll(page = 1, pageSize = 10) {
+        const offset = (page - 1) * pageSize;
+        const query = `
+            SELECT *
+            FROM logs
+            ORDER BY timestamp DESC
+            LIMIT $1 OFFSET $2
+        `;
+        let client: PoolClient | undefined;
+
+        try {
+            client = await pool.connect();
+            const result = await client.query(query, [pageSize, offset]);
+            return result.rows.map(row => ({
+                id: row.id,
+                timestamp: row.timestamp,
+                level: row.level,
+                mensagem: row.mensagem,
+                stackTrace: row.stack_trace,
+                servico: row.servico,
+                contexto: row.contexto,
+                tags: row.tags,
+                ambiente: row.ambiente,
+                duracaoMs: row.duracao_ms,
+                metodoHttp: row.metodo_http,
+                yamcolIdUsuario: row.yamcol_id_usuario
+            }));
+        } catch (error) {
+            console.error("Erro ao buscar logs:", error);
+            throw error;
+        } finally {
+            client?.release();
+        }
+    }
+
+    async deleteById(id: number) {
+        const query = `DELETE FROM logs WHERE id = $1`;
+        let client: PoolClient | undefined;
+
+        try {
+            client = await pool.connect();
+            await client.query(query, [id]);
+            return { deletedId: id };
+        } catch (error) {
+            console.error("Erro ao deletar log:", error);
+            throw error;
+        } finally {
+            client?.release();
+        }
+    }
+
+    async readById(id: number) {
+        const query = `SELECT * FROM logs WHERE id = $1`;
+        let client: PoolClient | undefined;
+
+        try {
+            client = await pool.connect();
+            const result = await client.query(query, [id]);
+
+            if (result.rowCount === 0) {
+                return null; // ou lançar erro se preferir
+            }
+
+            const row = result.rows[0];
+            return {
+                id: row.id,
+                timestamp: row.timestamp,
+                level: row.level,
+                mensagem: row.mensagem,
+                stackTrace: row.stack_trace,
+                servico: row.servico,
+                contexto: row.contexto,
+                tags: row.tags,
+                ambiente: row.ambiente,
+                duracaoMs: row.duracao_ms,
+                metodoHttp: row.metodo_http,
+                yamcolIdUsuario: row.yamcol_id_usuario
+            };
+        } catch (error) {
+            console.error("Erro ao buscar log:", error);
+            throw error;
+        } finally {
+            client?.release();
+        }
+    }
 }
