@@ -3,7 +3,10 @@
   "private": true,
   "scripts": {
     "start": "bun src/app.ts",
-    "dev": "bun --hot src/app.ts"
+    "dev": "bun --hot src/app.ts",
+    "build:windows-x64": "bun build src/app.ts --compile --target=bun-windows-x64 --outfile build/YamcolLogs",
+    "build:windows-x64-baseline": "bun build src/app.ts --compile --target=bun-windows-x64-baseline --outfile build/YamcolLogs",
+    "build:windows-x64-modern": "bun build src/app.ts --compile --target=bun-windows-x64-modern --outfile build/YamcolLogs"
   },
   "devDependencies": {
     "@types/bun": "latest"
